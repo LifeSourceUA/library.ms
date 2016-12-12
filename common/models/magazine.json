@@ -1,0 +1,16 @@
+{
+  "name": "Magazine",
+  "plural": "magazines",
+  "base": "PersistedModel",
+  "strict": true,
+  "properties": {
+    "id": {
+      "type": "String",
+      "required": true,
+      "id": true
+    },
+    "title": "String",
+    "description": "String",
+    "info": "Object"
+  }
+}

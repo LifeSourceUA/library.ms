@@ -1,0 +1,6 @@
+{
+  "service": {
+    "group": "test",
+    "name": "library"
+  }
+}

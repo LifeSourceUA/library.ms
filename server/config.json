@@ -1,27 +1,14 @@
 {
-  "restApiRoot": "/api",
+  "restApiRoot": "/v1",
   "host": "0.0.0.0",
   "port": 3000,
+  "legacyExplorer": false,
   "remoting": {
-    "context": {
-      "enableHttpContext": false
-    },
-    "rest": {
-      "normalizeHttpPath": false,
-      "xml": false
-    },
-    "json": {
-      "strict": false,
-      "limit": "100kb"
-    },
-    "urlencoded": {
-      "extended": true,
-      "limit": "100kb"
-    },
-    "cors": false,
-    "errorHandler": {
-      "disableStackTrace": false
-    }
+    "context": false,
+    "cors": false
   },
-  "legacyExplorer": false
+  "service":{
+    "domain": "domain",
+    "name": "library"
+  }
 }

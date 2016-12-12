@@ -1,0 +1,26 @@
+{
+  "name": "Periodical",
+  "plural": "periodicals",
+  "base": "PersistedModel",
+  "strict": true,
+  "properties": {
+    "id": {
+      "type": "String",
+      "required": true,
+      "id": true
+    },
+    "type": {
+      "type": "String",
+      "required": true
+    },
+    "title": "String",
+    "description": "String",
+    "info": "Object"
+  },
+  "relations": {
+    "issues": {
+      "type": "hasMany",
+      "model": "PeriodicalIssue"
+    }
+  }
+}
