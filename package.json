@@ -19,6 +19,7 @@
     "loopback-datasource-juggler": "^2.39.0"
   },
   "devDependencies": {
+    "cors": "^2.8.1",
     "nodemon": "^1.11.0"
   },
   "babel": {

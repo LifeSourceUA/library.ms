@@ -15,11 +15,6 @@
   },
   "Periodical": {
     "dataSource": "mongo",
-    "public": false,
-    "strict": true
-  },
-  "Magazine": {
-    "dataSource": "mongo",
     "public": true,
     "strict": true
   },

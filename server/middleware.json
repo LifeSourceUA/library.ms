@@ -1,4 +1,9 @@
 {
+  "init": {
+    "cors": {
+      "enabled": false
+    }
+  },
   "routes": {
     "loopback#rest": {
       "paths": [
