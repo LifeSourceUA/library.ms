@@ -1,0 +1,15 @@
+{
+  "services": {
+    "auth": {
+      "url": "http://auth.ls:3000/v1"
+    }
+  },
+  "service": {
+    "group": "test",
+    "name": "storage",
+    "rootPath": "/data/storage",
+    "anonymousPermissions": {
+      "files:read": ["**"]
+    }
+  }
+}

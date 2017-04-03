@@ -1,6 +1,17 @@
 {
+  "services": {
+    "auth": {
+      "url": "http://localhost:3001/v1"
+    },
+    "storage": {
+      "url": "http://localhost:3002"
+    }
+  },
   "service": {
     "group": "test",
-    "name": "library"
+    "name": "library",
+    "user": {
+      "accessToken": "B1pRF3dPlS1xpAK2_DxHJZTCt3OPxSyGTCK3dwlBJXT0t3Owe"
+    }
   }
 }

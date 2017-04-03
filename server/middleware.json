@@ -4,6 +4,13 @@
       "enabled": false
     }
   },
+  "parse": {
+    "body-parser#raw": {
+      "params": {
+        "limit": "200mb"
+      }
+    }
+  },
   "routes": {
     "loopback#rest": {
       "paths": [
@@ -15,6 +22,6 @@
     "loopback#urlNotFound": {}
   },
   "final:after": {
-    "loopback#errorHandler": {}
+    "strong-error-handler": {}
   }
 }

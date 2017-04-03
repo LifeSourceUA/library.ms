@@ -22,5 +22,9 @@
     "dataSource": "mongo",
     "public": true,
     "strict": true
+  },
+  "Attachment": {
+    "dataSource": "mongo",
+    "public": false
   }
 }

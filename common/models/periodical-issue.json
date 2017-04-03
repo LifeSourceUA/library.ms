@@ -22,6 +22,14 @@
     "parent": {
       "type": "belongsTo",
       "model": "Periodical"
+    },
+    "attachments$": {
+      "type": "embedsMany",
+      "model": "Attachment",
+      "property": "attachments"
     }
+  },
+  "mixins": {
+    "DisableDefaultRemoteMethods": {}
   }
 }

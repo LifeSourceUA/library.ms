@@ -11,6 +11,24 @@ services:
     networks:
       - private
 
+  auth:
+    build: ./containers/auth
+    container_name: auth.ls
+    ports:
+      - "3001:3000"
+    networks:
+      - private
+
+  storage:
+    build: ./containers/storage
+    container_name: storage.ls
+    ports:
+      - "3002:3000"
+    volumes:
+      - ./volumes/storage:/data/storage
+    networks:
+      - private
+
 networks:
   private:
     driver: bridge

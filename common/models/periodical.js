@@ -1,4 +1,6 @@
-import Prepare from 'common/utils/prepareModel';
+import app from 'server/server';
+import fetch from 'node-fetch';
+import shortid from 'shortid';
 
 module.exports = function(Periodical) {
     Periodical.TYPE_MAGAZINE = 'magazine';
@@ -7,8 +9,6 @@ module.exports = function(Periodical) {
         Periodical.TYPE_MAGAZINE,
         Periodical.TYPE_NEWSPAPER
     ];
-
-    Prepare(Periodical);
 
     Periodical.toPublic = (periodical) => {
         return periodical;
@@ -107,6 +107,52 @@ module.exports = function(Periodical) {
 
         if (ctx.result.meta.total === 0) {
             ctx.res.statusCode = 404;
+        }
+    });
+
+    /**
+     * Get One
+     *
+     * GET /users/:id
+     * Access: users.read
+     */
+    Periodical.remoteMethod('getOne', {
+        http: {
+            verb: 'get',
+            path: '/:id'
+        },
+        accepts: [
+            {
+                arg: 'id',
+                type: 'String'
+            }
+        ],
+        returns: {
+            type: 'Object',
+            root: true
+        }
+    });
+    Periodical.beforeRemote('getOne', async (ctx) => {
+        // if (!Acl.isGranted(ctx.req.user, 'users:read')) {
+        //     const error = new Error('Access denied');
+        //     error.statusCode = 401;
+        //     throw error;
+        // }
+    });
+    Periodical.getOne = async (id) => {
+        const result = await Periodical.findById(id);
+
+        if (result === null) {
+            const error = new Error('Not found');
+            error.statusCode = 404;
+            throw error;
+        }
+
+        return result;
+    };
+    Periodical.afterRemote('getOne', async (ctx) => {
+        if (ctx.result) {
+            Periodical.toPublic(ctx.result);
         }
     });
 
@@ -249,6 +295,36 @@ module.exports = function(Periodical) {
     });
 
     /**
+     * GET /{id}/issues/{child}
+     */
+    Periodical.remoteMethod('getOneIssue', {
+        http: { verb: 'get', path: '/:id/issues/:issueId' },
+        accepts: [
+            { arg: 'id', type: 'String' },
+            { arg: 'issueId', type: 'String' }
+        ],
+        returns: { type: 'PeriodicalIssue', root: true }
+    });
+    Periodical.getOneIssue = async (id, issueId) => {
+        const PeriodicalIssue = Periodical.app.models.PeriodicalIssue;
+        const issue = await PeriodicalIssue.findById(issueId);
+
+        if (issue === null) {
+            const error = new Error('Not found');
+            error.statusCode = 404;
+            throw error;
+        }
+
+        if (issue.periodicalId !== id) {
+            const error = new Error('Periodical mismatch');
+            error.statusCode = 404;
+            throw error;
+        }
+
+        return issue;
+    };
+
+    /**
      * PUT /{id}/issues/{child}
      */
     Periodical.remoteMethod('updateOneIssue', {
@@ -287,5 +363,110 @@ module.exports = function(Periodical) {
         await issue.updateAttributes(data);
 
         return issue;
+    };
+
+    /**
+     * POST /{id}/issues/{child}/attachments
+     */
+    Periodical.remoteMethod('attachmentCreate', {
+        http: { verb: 'post', path: '/:id/issues/:issueId/attachments' },
+        accepts: [
+            { arg: 'id', type: 'String' },
+            { arg: 'issueId', type: 'String' },
+            {
+                arg: 'file',
+                type: 'string',
+                http: { source: 'body' }
+            }
+        ],
+        returns: {
+            arg: 'data',
+            type: 'Periodical',
+            root: true
+        }
+    });
+    Periodical.attachmentCreate = async (id, issueId, file) => {
+        const PeriodicalIssue = Periodical.app.models.PeriodicalIssue;
+        const issue = await PeriodicalIssue.findById(issueId);
+
+        if (issue === null) {
+            const error = new Error('Not found');
+            error.statusCode = 404;
+            throw error;
+        }
+
+        if (issue.periodicalId !== id) {
+            const error = new Error('Parent ID mismatch');
+            error.statusCode = 400;
+            throw error;
+        }
+
+        // TODO переписать сохранение вложения
+        const services = app.get('services');
+        const config = app.get('service');
+
+        const location = `${services.storage.url}/periodicals/${issue.periodicalId}/${issue.id}/${issue.id}-public.pdf`;
+        const response = await fetch(location, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${config.user.accessToken}`
+            },
+            body: file
+        });
+
+        if (response.status !== 201) {
+            throw new Error('Не удалось сохранить файл');
+        }
+
+        await issue.attachments$.destroyAll();
+        const attachment = await issue.attachments$.create({
+            id: shortid.generate(),
+            type: 'public',
+            location
+        });
+
+        return issue;
+    };
+    Periodical.afterRemote('attachmentCreate', async (ctx, issue) => {
+        const PeriodicalIssue = ctx.req.app.models.PeriodicalIssue;
+        ctx.result = PeriodicalIssue.toPublic(issue);
+        ctx.res.statusCode = 201;
+    });
+
+    /**
+     * DELETE /{id}/issues/{child}/attachments/{attachmentId}
+     */
+    Periodical.remoteMethod('attachmentRemove', {
+        http: {
+            verb: 'delete',
+            path: '/:periodicalId/issues/:issueId/attachments/:attachmentId'
+        },
+        accepts: [
+            { arg: 'periodicalId', type: 'String' },
+            { arg: 'issueId', type: 'String' },
+            { arg: 'attachmentId', type: 'String' }
+        ],
+        returns: {
+            root: true
+        }
+    });
+    Periodical.attachmentRemove = async (periodicalId, issueId, attachmentId) => {
+        const PeriodicalIssue = Periodical.app.models.PeriodicalIssue;
+        const issue = await PeriodicalIssue.findById(issueId);
+
+        if (issue === null) {
+            const error = new Error('Not found');
+            error.statusCode = 404;
+            throw error;
+        }
+        if (issue.periodicalId !== periodicalId) {
+            const error = new Error('Parent ID mismatch');
+            error.statusCode = 400;
+            throw error;
+        }
+
+        // await issue.attachments$.destroy(attachmentId);
+        const attachment = await issue.attachments$.findById(attachmentId);
+        await attachment.destroy();
     };
 };

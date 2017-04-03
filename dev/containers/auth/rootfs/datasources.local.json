@@ -1,0 +1,8 @@
+{
+  "mongo": {
+    "host": "db.ls",
+    "database": "auth",
+    "name": "mongo",
+    "connector": "mongodb"
+  }
+}
