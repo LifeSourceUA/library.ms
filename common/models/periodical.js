@@ -1,6 +1,7 @@
 import app from 'server/server';
 import fetch from 'node-fetch';
 import shortid from 'shortid';
+import Acl from 'common/lib/Acl';
 
 module.exports = function(Periodical) {
     Periodical.TYPE_MAGAZINE = 'magazine';
@@ -30,6 +31,13 @@ module.exports = function(Periodical) {
             root: true
         }
     });
+    Periodical.beforeRemote('createOne', async (ctx) => {
+        if (!Acl.isGranted(ctx.req.user, 'periodicals:write')) {
+            const error = new Error('Access denied');
+            error.statusCode = 401;
+            throw error;
+        }
+    });
     Periodical.createOne = async (data) => {
         const periodical = new Periodical(data);
 
@@ -55,6 +63,12 @@ module.exports = function(Periodical) {
         returns: { type: 'Object', root: true }
     });
     Periodical.beforeRemote('getAll', async (ctx) => {
+        if (!Acl.isGranted(ctx.req.user, 'periodicals:read')) {
+            const error = new Error('Access denied');
+            error.statusCode = 401;
+            throw error;
+        }
+
         /**
          * Arguments validation
          */
@@ -133,11 +147,11 @@ module.exports = function(Periodical) {
         }
     });
     Periodical.beforeRemote('getOne', async (ctx) => {
-        // if (!Acl.isGranted(ctx.req.user, 'users:read')) {
-        //     const error = new Error('Access denied');
-        //     error.statusCode = 401;
-        //     throw error;
-        // }
+        if (!Acl.isGranted(ctx.req.user, 'periodicals:read')) {
+            const error = new Error('Access denied');
+            error.statusCode = 401;
+            throw error;
+        }
     });
     Periodical.getOne = async (id) => {
         const result = await Periodical.findById(id);
@@ -175,6 +189,13 @@ module.exports = function(Periodical) {
             root: true
         }
     });
+    Periodical.beforeRemote('updateOne', async (ctx) => {
+        if (!Acl.isGranted(ctx.req.user, 'periodicals:write')) {
+            const error = new Error('Access denied');
+            error.statusCode = 401;
+            throw error;
+        }
+    });
     Periodical.updateOne = async (id, data) => {
         const periodical = await Periodical.findById(id);
 
@@ -202,6 +223,12 @@ module.exports = function(Periodical) {
         returns: { type: 'Object', root: true }
     });
     Periodical.beforeRemote('getIssues', async (ctx) => {
+        if (!Acl.isGranted(ctx.req.user, 'periodicals:read')) {
+            const error = new Error('Access denied');
+            error.statusCode = 401;
+            throw error;
+        }
+
         /**
          * Arguments validation
          */
@@ -273,6 +300,13 @@ module.exports = function(Periodical) {
             root: true
         }
     });
+    Periodical.beforeRemote('createOneIssue', async (ctx) => {
+        if (!Acl.isGranted(ctx.req.user, 'periodicals:write')) {
+            const error = new Error('Access denied');
+            error.statusCode = 401;
+            throw error;
+        }
+    });
     Periodical.createOneIssue = async (id, data) => {
         const periodical = await Periodical.findById(id);
 
@@ -304,6 +338,13 @@ module.exports = function(Periodical) {
             { arg: 'issueId', type: 'String' }
         ],
         returns: { type: 'PeriodicalIssue', root: true }
+    });
+    Periodical.beforeRemote('getOneIssue', async (ctx) => {
+        if (!Acl.isGranted(ctx.req.user, 'periodicals:read')) {
+            const error = new Error('Access denied');
+            error.statusCode = 401;
+            throw error;
+        }
     });
     Periodical.getOneIssue = async (id, issueId) => {
         const PeriodicalIssue = Periodical.app.models.PeriodicalIssue;
@@ -342,6 +383,13 @@ module.exports = function(Periodical) {
             arg: 'data',
             type: 'Periodical',
             root: true
+        }
+    });
+    Periodical.beforeRemote('updateOneIssue', async (ctx) => {
+        if (!Acl.isGranted(ctx.req.user, 'periodicals:write')) {
+            const error = new Error('Access denied');
+            error.statusCode = 401;
+            throw error;
         }
     });
     Periodical.updateOneIssue = async (id, issueId, data) => {
@@ -383,6 +431,13 @@ module.exports = function(Periodical) {
             arg: 'data',
             type: 'Periodical',
             root: true
+        }
+    });
+    Periodical.beforeRemote('attachmentCreate', async (ctx) => {
+        if (!Acl.isGranted(ctx.req.user, 'periodicals:write')) {
+            const error = new Error('Access denied');
+            error.statusCode = 401;
+            throw error;
         }
     });
     Periodical.attachmentCreate = async (id, issueId, file) => {
@@ -448,6 +503,13 @@ module.exports = function(Periodical) {
         ],
         returns: {
             root: true
+        }
+    });
+    Periodical.beforeRemote('attachmentRemove', async (ctx) => {
+        if (!Acl.isGranted(ctx.req.user, 'periodicals:write')) {
+            const error = new Error('Access denied');
+            error.statusCode = 401;
+            throw error;
         }
     });
     Periodical.attachmentRemove = async (periodicalId, issueId, attachmentId) => {
