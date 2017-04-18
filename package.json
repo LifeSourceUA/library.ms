@@ -22,7 +22,6 @@
     "strong-error-handler": "^1.2.1"
   },
   "devDependencies": {
-    "cors": "^2.8.1",
     "nodemon": "^1.11.0"
   },
   "babel": {
