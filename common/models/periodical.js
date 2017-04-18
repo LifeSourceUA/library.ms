@@ -527,8 +527,19 @@ module.exports = function(Periodical) {
             throw error;
         }
 
-        // await issue.attachments$.destroy(attachmentId);
         const attachment = await issue.attachments$.findById(attachmentId);
         await attachment.destroy();
+
+        // TODO переписать удаление вложения
+        const services = app.get('services');
+        const config = app.get('service');
+
+        const location = `${services.storage.url}/periodicals/${issue.periodicalId}/${issue.id}/${issue.id}-public.pdf`;
+        fetch(location, {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${config.user.accessToken}`
+            }
+        });
     };
 };

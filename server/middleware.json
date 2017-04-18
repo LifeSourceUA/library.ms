@@ -2,7 +2,11 @@
   "init": {
     "cors": {
       "enabled": false
-    }
+    },
+    "./middlewares/HidePoweredBy": {}
+  },
+  "auth": {
+    "./middlewares/Auth": {}
   },
   "parse": {
     "body-parser#raw": {
