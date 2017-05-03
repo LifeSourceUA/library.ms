@@ -1,6 +1,9 @@
 {
   "init": {
-    "./middlewares/HidePoweredBy": {}
+    "./middlewares/HidePoweredBy": {},
+    "cors": {
+      "enabled": false
+    }
   },
   "auth": {
     "./middlewares/Auth": {}

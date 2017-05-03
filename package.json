@@ -10,18 +10,19 @@
     "test": "newman run test/collection.json --environment test/env.json"
   },
   "dependencies": {
-    "babel-plugin-transform-async-to-generator": "^6.22.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.23.0",
-    "babel-register": "^6.23.0",
-    "body-parser": "^1.17.0",
-    "loopback": "^3.4.0",
-    "loopback-boot": "^2.6.5",
-    "loopback-connector-mongodb": "^3.0.1",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
+    "babel-register": "^6.24.1",
+    "body-parser": "^1.17.1",
+    "loopback": "^3.6.0",
+    "loopback-boot": "^2.24.0",
+    "loopback-connector-mongodb": "^3.1.0",
     "node-fetch": "^1.6.3",
-    "shortid": "^2.2.6",
-    "strong-error-handler": "^1.2.1"
+    "shortid": "^2.2.8",
+    "strong-error-handler": "^2.1.0"
   },
   "devDependencies": {
+    "cors": "^2.8.3",
     "nodemon": "^1.11.0"
   },
   "babel": {
