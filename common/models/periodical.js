@@ -470,6 +470,7 @@ module.exports = function(Periodical) {
         });
 
         if (response.status !== 201) {
+            console.error(await response.text());
             throw new Error('Не удалось сохранить файл');
         }
 
