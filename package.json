@@ -1,6 +1,6 @@
 {
   "name": "ls-library",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "main": "server/server.js",
   "scripts": {
     "start": "NODE_PATH=. NODE_ENV=production node -r babel-register .",
