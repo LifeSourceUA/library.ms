@@ -1,0 +1,30 @@
+version: "1.0"
+
+steps:
+  Config:
+    title: Get production config
+    image_name: library.ms-config
+    working_directory: ${{main_clone}}
+    commands:
+      - bash -c 'rm -rf /codefresh/volume/${{REPO_NAME}}'
+      - git clone git@bitbucket.org:lifesource/library.ms-config.git /codefresh/volume/${{REPO_NAME}}
+      - bash -c 'cd /codefresh/volume/${{REPO_NAME}}/ && git checkout master && git branch && git status'
+      - ls -l /codefresh/volume/${{REPO_NAME}}
+
+  Build:
+    title: Docker Image Build
+    type: build
+    image_name: library.ms
+    working_directory: ./
+    dockerfile: Dockerfile
+
+  Push:
+    title: Pushing to Docker Hub
+    type: push
+    candidate: "${{Build}}"
+    tag: latest
+    registry: azure
+    when:
+      branch:
+        only:
+          - "master"
