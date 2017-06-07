@@ -3,7 +3,7 @@ version: "1.0"
 steps:
   Config:
     title: Get production config
-    image_name: library.ms-config
+    image: codefreshio/git-image:latest
     working_directory: ${{main_clone}}
     commands:
       - bash -c 'rm -rf /codefresh/volume/${{REPO_NAME}}'
