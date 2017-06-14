@@ -423,7 +423,7 @@ module.exports = function(Periodical) {
             { arg: 'issueId', type: 'String' },
             {
                 arg: 'file',
-                type: 'string',
+                type: 'any',
                 http: { source: 'body' }
             }
         ],
