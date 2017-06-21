@@ -162,6 +162,21 @@ module.exports = function(Periodical) {
             throw error;
         }
 
+        const PeriodicalIssue = Periodical.app.models.PeriodicalIssue;
+        const results = await PeriodicalIssue.find({
+            where: { periodicalId: result.id },
+            order: 'numberTotal ASC'
+        });
+
+        result.issues = results.map((issue) => {
+            return {
+                id: issue.id,
+                publishYear: issue.publishYear,
+                numberYear: issue.numberYear,
+                numberTotal: issue.numberTotal
+            }
+        });
+
         return result;
     };
     Periodical.afterRemote('getOne', async (ctx) => {

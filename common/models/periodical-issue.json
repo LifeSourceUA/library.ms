@@ -14,8 +14,8 @@
     },
     "title": "String",
     "description": "String",
-    "publishDate": "Date",
-    "numberYear": "String",
+    "publishYear": "Number",
+    "numberYear": "Number",
     "numberTotal": "Number"
   },
   "relations": {
